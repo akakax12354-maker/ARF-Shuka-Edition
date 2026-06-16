@@ -38,9 +38,9 @@ jobs:
             cp "$f" $REPO/lib/subghz/protocols/
           done
           cp $SHUKA/new_files/*.h  $REPO/lib/subghz/protocols/
-          # Desktop boot scene goes to scenes folder only
-          cp $SHUKA/new_files/desktop_scene_boot_text.c \
-             $REPO/applications/services/desktop/scenes/
+          # desktop_scene_boot_text.c uses ARF-specific DesktopBootTextExit event
+          # which requires desktop_events.h + desktop_scene_config.h from ARF fork.
+          # Skipped to keep all official desktop scenes intact.
 
           # Modified protocol files
           cp $SHUKA/modified_files/keeloq.c          $REPO/lib/subghz/protocols/
@@ -69,11 +69,14 @@ jobs:
           cp $SHUKA/modified_files/furi_hal_crypto.c $REPO/targets/f7/furi_hal/
           cp $SHUKA/modified_files/furi_hal_crypto.h $REPO/targets/f7/furi_hal/
 
-          # Desktop service files
-          cp $SHUKA/modified_files/desktop.c             $REPO/applications/services/desktop/
-          cp $SHUKA/modified_files/desktop_events.h      $REPO/applications/services/desktop/views/
-          cp $SHUKA/modified_files/desktop_scene_config.h \
-             $REPO/applications/services/desktop/scenes/
+          # NOTE: desktop.c, desktop_events.h, desktop_scene_config.h are NOT
+          # copied because they come from the ARF fork and use renamed events
+          # incompatible with the official firmware's desktop scene files.
+          # Boot-screen car icon and dummy-mode features are skipped here.
+
+          # api_symbols.csv — bumped to v87.3 to accept all new ARF-exported symbols.
+          # Without this the SDK finalization check blocks the build.
+          cp $SHUKA/modified_files/api_symbols.csv $REPO/targets/f7/
 
           # Remove stock kia.c — our kia_v0-v7 replace it (same exported symbols)
           rm -f $REPO/lib/subghz/protocols/kia.c \
