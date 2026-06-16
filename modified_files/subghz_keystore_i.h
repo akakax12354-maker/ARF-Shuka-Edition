@@ -10,3 +10,5 @@ struct SubGhzKeystore {
     const char* mfname;
     uint8_t kl_type;
 };
+
+void subghz_keystore_reset_kl(SubGhzKeystore* instance);

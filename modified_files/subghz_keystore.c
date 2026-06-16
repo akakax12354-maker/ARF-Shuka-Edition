@@ -341,6 +341,12 @@ SubGhzKeyArray_t* subghz_keystore_get_data(SubGhzKeystore* instance) {
     return &instance->data;
 }
 
+void subghz_keystore_reset_kl(SubGhzKeystore* instance) {
+    furi_assert(instance);
+    instance->kl_type = 0;
+    instance->mfname = "";
+}
+
 bool subghz_keystore_raw_encrypted_save(
     const char* input_file_name,
     const char* output_file_name,
