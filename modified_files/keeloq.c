@@ -284,7 +284,7 @@ static bool subghz_protocol_keeloq_gen_data(
 
         if(keeloq_counter_mode == 0 || bypass) {
             // Check for OFEX (overflow experimental) mode
-            if(furi_hal_subghz_get_rolling_counter_mult() != -0x7FFFFFFF || bypass) {
+            if((int32_t)furi_hal_subghz_get_rolling_counter_mult() != -0x7FFFFFFF || bypass) {
                 bypass = false;
                 // standart counter mode. PULL data from subghz_block_generic_global variables
                 if(!subghz_block_generic_global_counter_override_get(&instance->generic.cnt)) {
