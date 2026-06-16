@@ -28,10 +28,14 @@ jobs:
           REPO=flipper-fw
           SHUKA=shuka-edition
 
-          # All new protocol + crypto + scanner + boot files
-          cp $SHUKA/new_files/*.c  $REPO/lib/subghz/protocols/
+          # All new protocol + crypto + scanner files (exclude boot scene — wrong dir)
+          for f in $SHUKA/new_files/*.c; do
+            fname=$(basename "$f")
+            [ "$fname" = "desktop_scene_boot_text.c" ] && continue
+            cp "$f" $REPO/lib/subghz/protocols/
+          done
           cp $SHUKA/new_files/*.h  $REPO/lib/subghz/protocols/
-          # Desktop boot scene goes to scenes folder
+          # Desktop boot scene goes to scenes folder only
           cp $SHUKA/new_files/desktop_scene_boot_text.c \
              $REPO/applications/services/desktop/scenes/
 
@@ -40,10 +44,13 @@ jobs:
           cp $SHUKA/modified_files/protocol_items.c  $REPO/lib/subghz/protocols/
           cp $SHUKA/modified_files/protocol_items.h  $REPO/lib/subghz/protocols/
 
-          # custom_btn (new module, goes into blocks/)
-          cp $SHUKA/modified_files/custom_btn.c   $REPO/lib/subghz/blocks/
-          cp $SHUKA/modified_files/custom_btn.h   $REPO/lib/subghz/blocks/
-          cp $SHUKA/modified_files/custom_btn_i.h $REPO/lib/subghz/blocks/
+          # custom_btn + ARF global state (goes into blocks/)
+          cp $SHUKA/modified_files/custom_btn.c                    $REPO/lib/subghz/blocks/
+          cp $SHUKA/modified_files/custom_btn.h                    $REPO/lib/subghz/blocks/
+          cp $SHUKA/modified_files/custom_btn_i.h                  $REPO/lib/subghz/blocks/
+          cp $SHUKA/modified_files/subghz_block_generic_global.c   $REPO/lib/subghz/blocks/
+          cp $SHUKA/modified_files/subghz_block_generic_global.h   $REPO/lib/subghz/blocks/
+          cp $SHUKA/modified_files/generic.h                       $REPO/lib/subghz/blocks/
 
           # furi_hal_crypto extensions
           cp $SHUKA/modified_files/furi_hal_crypto.c $REPO/targets/f7/furi_hal/
