@@ -33,6 +33,21 @@ jobs:
           git tag "ARF-Shuka-Edition"
           git describe --tags --always
 
+      - name: Apply Shuka-Edition modified files
+        run: |
+          REPO=flipper-fw
+          SHUKA=shuka-edition
+
+          # Overlay every file in modified_files/ at the same relative path inside the ARF clone
+          find $SHUKA/modified_files -type f | while read src; do
+            relative="${src#$SHUKA/modified_files/}"
+            dest="$REPO/$relative"
+            mkdir -p "$(dirname "$dest")"
+            cp "$src" "$dest"
+            echo "  patched: $relative"
+          done
+          echo "Modified files applied"
+
       - name: Add Shuka-Edition protocols on top of ARF
         run: |
           REPO=flipper-fw
