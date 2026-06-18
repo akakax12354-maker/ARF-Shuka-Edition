@@ -168,11 +168,13 @@ static LoaderMenuApp* loader_menu_app_alloc(LoaderMenu* loader_menu) {
     // Heap-allocate: DesktopSettings contains FavoriteApp[N] and can be 500+ bytes;
     // loader_menu_thread only has 1024 bytes of stack.
     DesktopSettings* ds = malloc(sizeof(DesktopSettings));
-    desktop_settings_load(ds);
-    menu_set_scroll_loop(app->primary_menu, ds->menu_scroll_loop != 0);
-    menu_set_scroll_anim(app->primary_menu, ds->menu_scroll_anim != 0);
-    menu_set_layout_grid(app->primary_menu, ds->menu_layout      != 0);
-    free(ds);
+    if(ds) {
+        desktop_settings_load(ds);
+        menu_set_scroll_loop(app->primary_menu, ds->menu_scroll_loop != 0);
+        menu_set_scroll_anim(app->primary_menu, ds->menu_scroll_anim != 0);
+        menu_set_layout_grid(app->primary_menu, ds->menu_layout      != 0);
+        free(ds);
+    }
 
     // Primary menu
     View* primary_view = menu_get_view(app->primary_menu);

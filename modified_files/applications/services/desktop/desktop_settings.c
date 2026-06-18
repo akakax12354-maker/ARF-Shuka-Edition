@@ -75,6 +75,13 @@ void desktop_settings_load(DesktopSettings* settings) {
 
             free(s18);
 
+        } else if(version > DESKTOP_SETTINGS_VER) {
+            // Newer settings file (built by a future version) — use defaults rather than failing
+            FURI_LOG_W(TAG, "Settings version %d > code version %d, resetting to defaults", version, DESKTOP_SETTINGS_VER);
+            success = true;
+            memset(settings, 0, sizeof(DesktopSettings));
+            desktop_settings_set_defaults(settings);
+
         } else if(version == DESKTOP_SETTINGS_VER_17) {
             DesktopSettingsV17* s17 = malloc(sizeof(DesktopSettingsV17));
 

@@ -75,16 +75,25 @@ jobs:
           cp $SHUKA/new_files/toyota_lexus.h $PROTO/
 
           # ── Patch protocol_items.h — add our includes after toyota.h ─────
+          if ! grep -q '#include "toyota.h"' $PROTO/protocol_items.h; then
+            echo "ERROR: toyota.h include not found in protocol_items.h — ARF changed its layout" >&2
+            exit 1
+          fi
           sed -i \
             's|#include "toyota.h"|#include "toyota.h"\n#include "gm_rolling.h"\n#include "nissan.h"\n#include "renault.h"\n#include "toyota_lexus.h"|' \
             $PROTO/protocol_items.h
+          grep -q '#include "gm_rolling.h"' $PROTO/protocol_items.h || { echo "ERROR: header patch failed" >&2; exit 1; }
 
           # ── Patch protocol_items.c — add entries after &subghz_protocol_toyota ─
+          if ! grep -q 'subghz_protocol_toyota,$' $PROTO/protocol_items.c; then
+            echo "ERROR: subghz_protocol_toyota entry not found in protocol_items.c — ARF changed its layout" >&2
+            exit 1
+          fi
           sed -i '/subghz_protocol_toyota,$/a\    \&subghz_protocol_toyota_lexus,\n    \&subghz_protocol_gm_rolling,\n    \&subghz_protocol_nissan,\n    \&subghz_protocol_renault,' \
             $PROTO/protocol_items.c
+          grep -q 'subghz_protocol_gm_rolling' $PROTO/protocol_items.c || { echo "ERROR: protocol_items.c patch failed" >&2; exit 1; }
 
           echo "All Shuka-Edition protocols added OK"
-          grep -c "subghz_protocol_\|_protocol," $PROTO/protocol_items.c || true
 
       - name: Apply custom boot splash
         run: |
