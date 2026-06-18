@@ -61,7 +61,9 @@ jobs:
           cp $SHUKA/new_files/gm_rolling.c   $PROTO/
           cp $SHUKA/new_files/gm_rolling.h   $PROTO/
 
-          # Honda Static is excluded — at 2.8 KB it pushes us over the STM32WB C2 boundary
+          # Honda Static (fixed/static codes, Honda/Acura)
+          cp $SHUKA/new_files/honda_static.c $PROTO/
+          cp $SHUKA/new_files/honda_static.h $PROTO/
 
           # Nissan (Nissan/Infiniti RKE)
           cp $SHUKA/new_files/nissan.c       $PROTO/
@@ -78,15 +80,27 @@ jobs:
 
           # ── Patch protocol_items.h — add our includes after toyota.h ─────
           sed -i \
-            's|#include "toyota.h"|#include "toyota.h"\n#include "gm_rolling.h"\n#include "nissan.h"\n#include "renault.h"\n#include "toyota_lexus.h"|' \
+            's|#include "toyota.h"|#include "toyota.h"\n#include "gm_rolling.h"\n#include "honda_static.h"\n#include "nissan.h"\n#include "renault.h"\n#include "toyota_lexus.h"|' \
             $PROTO/protocol_items.h
 
           # ── Patch protocol_items.c — add entries after &subghz_protocol_toyota ─
-          sed -i '/subghz_protocol_toyota,$/a\    \&subghz_protocol_toyota_lexus,\n    \&subghz_protocol_gm_rolling,\n    \&subghz_protocol_nissan,\n    \&subghz_protocol_renault,' \
+          sed -i '/subghz_protocol_toyota,$/a\    \&subghz_protocol_toyota_lexus,\n    \&subghz_protocol_gm_rolling,\n    \&subghz_protocol_honda_static,\n    \&subghz_protocol_nissan,\n    \&subghz_protocol_renault,' \
             $PROTO/protocol_items.c
 
           echo "All Shuka-Edition protocols added OK"
           grep -c "subghz_protocol_\|_protocol," $PROTO/protocol_items.c || true
+
+      - name: Apply custom boot splash
+        run: |
+          REPO=flipper-fw
+          SHUKA=shuka-edition
+
+          # Replace ARF's slideshow frames with our branded ones
+          cp $SHUKA/new_files/assets/slideshow/update_default/frame_*.png \
+             $REPO/assets/slideshow/update_default/
+          cp $SHUKA/new_files/assets/slideshow/first_start/frame_*.png \
+             $REPO/assets/slideshow/first_start/
+          echo "Boot splash applied"
 
       - name: Set up Python & fbt toolchain
         run: |

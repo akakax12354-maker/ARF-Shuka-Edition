@@ -8,11 +8,12 @@ Custom Flipper Zero firmware by **shuka0158**, built on top of [D4C1-Labs/Flippe
 
 ## What this adds beyond ARF
 
-ARF-Shuka-Edition is identical to upstream ARF plus **4 automotive protocols** that ARF does not have:
+ARF-Shuka-Edition is identical to upstream ARF plus **5 automotive protocols** that ARF does not have:
 
 | Protocol | Brand coverage | Encoding | Frame |
 |---|---|---|---|
 | **GM Rolling** | Chevrolet, GMC, Buick, Cadillac (2000–2015) | Manchester | 64-bit, XOR checksum |
+| **Honda Static** | Honda, Acura (fixed-code remotes, 1995–2005) | PWM | 32-bit |
 | **Nissan** | Nissan, Infiniti (2003–2018) | PWM | 64-bit, CRC-8 0x97 |
 | **Renault** | Renault, Dacia — Clio/Megane/Duster (2005–2020) | PCM biphase | 64-bit, XOR checksum |
 | **Toyota/Lexus** | Corolla, Camry, RAV4, Hilux, Land Cruiser, Lexus IS/RX/GS (2003–2020) | PWM | 72-bit, CRC-8 0xEA |
@@ -20,11 +21,13 @@ ARF-Shuka-Edition is identical to upstream ARF plus **4 automotive protocols** t
 > ARF already has a `toyota.c` covering older Corolla Verso (2004–2010) and Tundra (2011) variants.
 > Our `toyota_lexus.c` covers a different, newer frame format — both coexist in this firmware.
 
-Everything else — all 64 ARF protocols, the automotive scanner, custom button support, Keeloq extensions, AES/AUT64/TEA crypto, boot screen — is unchanged from ARF upstream.
+Everything else — all 64 ARF protocols, the automotive scanner, car-key emulator, custom button support, Keeloq extensions, AES/AUT64/TEA crypto — is unchanged from ARF upstream.
+
+Custom branded boot splash is shown on first boot and after firmware updates.
 
 ---
 
-## Full protocol list (68 total)
+## Full protocol list (69 total)
 
 ### Automotive RKE (our 4 additions marked ★)
 
@@ -35,6 +38,7 @@ Everything else — all 64 ARF protocols, the automotive scanner, custom button 
 | Fiat / Alfa / Lancia | Fiat Marelli, Fiat SPA |
 | Ford / Lincoln | Ford V0, V1, V2, V3 |
 | ★ GM / Chevrolet / Buick / Cadillac | GM Rolling |
+| ★ Honda / Acura | Honda Static |
 | Hyundai / Kia | KIA V0, V1, V2, V3/V4, V5, V6, V7 |
 | Land Rover | Land Rover V0 |
 | Mazda | Mazda V0, Mazda Siemens |
@@ -98,7 +102,7 @@ CI does this automatically on every push — see [`.github/workflows/build.yml`]
 | ARF upstream | ~855 KB | ~5 KB |
 | ARF-Shuka-Edition | ~858 KB | ~2 KB |
 
-The STM32WB55 C2 (Bluetooth coprocessor) flash boundary sits around 860 KB. Adding Honda Static (2.8 KB) pushes past it, so it is excluded.
+The STM32WB55 C2 (Bluetooth coprocessor) flash boundary sits around 860 KB.
 
 ---
 
