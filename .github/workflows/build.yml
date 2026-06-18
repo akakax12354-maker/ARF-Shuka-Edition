@@ -84,7 +84,7 @@ jobs:
             $PROTO/protocol_items.h
 
           # ── Patch protocol_items.c — add entries after &subghz_protocol_toyota ─
-          sed -i '/subghz_protocol_toyota,$/a\    \&subghz_protocol_toyota_lexus,\n    \&subghz_protocol_gm_rolling,\n    \&subghz_protocol_honda_static,\n    \&subghz_protocol_nissan,\n    \&subghz_protocol_renault,' \
+          sed -i '/subghz_protocol_toyota,$/a\    \&subghz_protocol_toyota_lexus,\n    \&subghz_protocol_gm_rolling,\n    \&honda_static_protocol,\n    \&subghz_protocol_nissan,\n    \&subghz_protocol_renault,' \
             $PROTO/protocol_items.c
 
           echo "All Shuka-Edition protocols added OK"
